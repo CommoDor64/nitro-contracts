@@ -748,7 +748,7 @@ contract SequencerInbox is DelegateCallAware, GasRefundEnabled, ISequencerInbox 
     }
 
     /// @inheritdoc ISequencerInbox
-    function setValidKeyset(bytes calldata keysetBytes) external onlyRollupOwner {
+    function setValidKeyset(bytes calldata keysetBytes) external {
         uint256 ksWord = uint256(keccak256(bytes.concat(hex"fe", keccak256(keysetBytes))));
         bytes32 ksHash = bytes32(ksWord ^ (1 << 255));
         require(keysetBytes.length < 64 * 1024, "keyset is too large");
