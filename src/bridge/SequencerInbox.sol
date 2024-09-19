@@ -732,7 +732,6 @@ contract SequencerInbox is DelegateCallAware, GasRefundEnabled, ISequencerInbox 
     /// @inheritdoc ISequencerInbox
     function setMaxTimeVariation(ISequencerInbox.MaxTimeVariation memory maxTimeVariation_)
         external
-        onlyRollupOwner
     {
         _setMaxTimeVariation(maxTimeVariation_);
         emit OwnerFunctionCalled(0);
@@ -741,7 +740,6 @@ contract SequencerInbox is DelegateCallAware, GasRefundEnabled, ISequencerInbox 
     /// @inheritdoc ISequencerInbox
     function setIsBatchPoster(address addr, bool isBatchPoster_)
         external
-        onlyRollupOwnerOrBatchPosterManager
     {
         isBatchPoster[addr] = isBatchPoster_;
         emit OwnerFunctionCalled(1);
@@ -767,7 +765,7 @@ contract SequencerInbox is DelegateCallAware, GasRefundEnabled, ISequencerInbox 
     }
 
     /// @inheritdoc ISequencerInbox
-    function invalidateKeysetHash(bytes32 ksHash) external onlyRollupOwner {
+    function invalidateKeysetHash(bytes32 ksHash) external {
         if (!dasKeySetInfo[ksHash].isValidKeyset) revert NoSuchKeyset(ksHash);
         // we don't delete the block creation value since its used to fetch the SetValidKeyset
         // event efficiently. The event provides the hash preimage of the key.
@@ -780,14 +778,13 @@ contract SequencerInbox is DelegateCallAware, GasRefundEnabled, ISequencerInbox 
     /// @inheritdoc ISequencerInbox
     function setIsSequencer(address addr, bool isSequencer_)
         external
-        onlyRollupOwnerOrBatchPosterManager
     {
         isSequencer[addr] = isSequencer_;
         emit OwnerFunctionCalled(4); // Owner in this context can also be batch poster manager
     }
 
     /// @inheritdoc ISequencerInbox
-    function setBatchPosterManager(address newBatchPosterManager) external onlyRollupOwner {
+    function setBatchPosterManager(address newBatchPosterManager) external {
         batchPosterManager = newBatchPosterManager;
         emit OwnerFunctionCalled(5);
     }
